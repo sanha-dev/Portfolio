@@ -13,8 +13,8 @@ const links = [
   },
   {
     label: "MEL 서비스",
-    value: "my-english-log.vercel.app",
-    href: "https://my-english-log.vercel.app",
+    value: "my-english-log-team.vercel.app",
+    href: "https://my-english-log-team.vercel.app",
     external: true,
   },
 ];

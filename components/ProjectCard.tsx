@@ -60,9 +60,9 @@ export default function ProjectCard({
 
         {/* 수치 성과 */}
         <div
-          className="mt-auto pt-5 grid gap-px rounded-lg overflow-hidden"
+          className="mt-auto pt-5 flex rounded-lg overflow-hidden"
           style={{
-            gridTemplateColumns: `repeat(${metrics.length}, 1fr)`,
+            gap: "1px",
             background: "var(--border)",
             border: "1px solid var(--border)",
           }}
@@ -70,16 +70,19 @@ export default function ProjectCard({
           {metrics.map(({ value, label }) => (
             <div
               key={label}
-              className="px-4 py-3 flex flex-col gap-0.5"
+              className="flex-1 min-w-0 px-4 py-3 flex flex-col gap-0.5"
               style={{ background: "var(--navy-900)" }}
             >
               <span
-                className="text-base font-bold metric"
-                style={{ color: "var(--text-primary)" }}
+                className="text-sm font-bold metric"
+                style={{ color: "var(--text-primary)", whiteSpace: "nowrap" }}
               >
                 {value}
               </span>
-              <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+              <span
+                className="text-[10px] truncate"
+                style={{ color: "var(--text-muted)" }}
+              >
                 {label}
               </span>
             </div>

@@ -34,7 +34,7 @@ export default function Footer() {
             LinkedIn
           </a>
           <a
-            href="https://my-english-log.vercel.app"
+            href="https://my-english-log-team.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs transition-opacity hover:opacity-70"

@@ -267,13 +267,13 @@ export default function EnglishLogPage() {
             서비스 바로가기
           </p>
           <a
-            href="https://my-english-log.vercel.app"
+            href="https://my-english-log-team.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="text-lg font-semibold transition-colors"
             style={{ color: "var(--accent)" }}
           >
-            my-english-log.vercel.app ↗
+            my-english-log-team.vercel.app ↗
           </a>
         </div>
         <Link

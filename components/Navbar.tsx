@@ -50,7 +50,7 @@ export default function Navbar() {
 
         {/* MEL CTA */}
         <a
-          href="https://my-english-log.vercel.app"
+          href="https://my-english-log-team.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
           className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium"
