@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy-950: #060912;
+  --navy-900: #0b1120;
+  --navy-800: #111827;
+  --navy-700: #1e2d45;
+  --navy-600: #243552;
+  --navy-400: #3b5278;
+  --accent:   #4f8ef7;
+  --accent-dim: #2d5fc4;
+  --text-primary: #f0f4ff;
+  --text-secondary: #8fa3c8;
+  --text-muted: #4d6080;
+  --border: rgba(79, 142, 247, 0.12);
+  --border-hover: rgba(79, 142, 247, 0.28);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--navy-950);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 공통 섹션 구분선 */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* 포인트 컬러 텍스트 */
+.text-accent { color: var(--accent); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+/* 카드 기본 스타일 */
+.card {
+  background: var(--navy-800);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+/* 태그 / 배지 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: rgba(79, 142, 247, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(79, 142, 247, 0.2);
+}
+
+/* 수치 강조 */
+.metric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
