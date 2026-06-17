@@ -3,6 +3,7 @@ import type { Project } from "@/data/projects";
 
 export default function ProjectCard({
   tag,
+  company,
   title,
   subtitle,
   problem,
@@ -16,8 +17,15 @@ export default function ProjectCard({
         className="card h-full flex flex-col p-7 gap-5"
         style={{ background: "var(--navy-800)" }}
       >
-        {/* 태그 */}
-        <span className="badge self-start">{tag}</span>
+        {/* 태그 + 소속 */}
+        <div className="flex flex-col gap-1.5">
+          <span className="badge self-start">{tag}</span>
+          {company && (
+            <p className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>
+              {company}
+            </p>
+          )}
+        </div>
 
         {/* 타이틀 */}
         <div>

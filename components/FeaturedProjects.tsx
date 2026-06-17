@@ -2,8 +2,18 @@ import { projects } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
 import Link from "next/link";
 
-export default function FeaturedProjects() {
-  const featured = projects.filter((p) => p.featured);
+export default function FeaturedProjects({ melUserCount = 102 }: { melUserCount?: number }) {
+  const featured = projects.filter((p) => p.featured).map((p) => {
+    if (p.slug === "mel") {
+      return {
+        ...p,
+        metrics: p.metrics.map((m) =>
+          m.label === "베타 가입자" ? { ...m, value: `${melUserCount}명` } : m
+        ),
+      };
+    }
+    return p;
+  });
 
   return (
     <section id="projects" className="max-w-6xl mx-auto px-8 py-28">

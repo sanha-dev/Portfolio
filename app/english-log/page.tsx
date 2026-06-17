@@ -1,14 +1,12 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import ProjectsBackLink from "@/components/ProjectsBackLink";
 
-const metrics = [
-  { value: "102명", label: "베타 가입자" },
-  { value: "70.5%", label: "번역 → 저장 전환율" },
-  { value: "348개", label: "저장된 표현" },
-  { value: "53%", label: "번역 속도 개선" },
-  { value: "200만원", label: "모두의 창업 지원금" },
-];
+import { getMelStats } from "@/lib/mel-stats";
 
-const process = [
+export const revalidate = 3600;
+
+const processSteps = [
   {
     step: "01",
     title: "문제 정의",
@@ -32,48 +30,87 @@ const process = [
   {
     step: "05",
     title: "성과와 다음 단계",
-    body: "베타 운영 4개월 만에 102명 가입, 번역→저장 전환율 70.5%를 달성했고, 모두의 창업 1차 합격으로 200만원 지원이 확정되었습니다. 현재 오픈 베타 런칭을 준비 중이며, React Native 앱 전환과 푸시 알림 기반 복습 시스템을 로드맵에 올려두고 있습니다.",
+    body: "베타 가입자 102명, 번역→저장 전환율 70.5%를 달성했고, 모두의 창업 1차 합격으로 200만원 지원이 확정되었습니다. 현재 오픈 베타 런칭을 준비 중이며, React Native 앱 전환과 푸시 알림 기반 복습 시스템을 로드맵에 올려두고 있습니다.",
   },
 ];
 
-const decisions = [
+const decisionLoops = [
   {
-    label: "데이터 확인",
-    content: "저장 후 학습 전환율이 낮음을 PostHog에서 발견",
+    title: "핵심 컨셉 피벗 — '즉시 학습'에서 '리콜'로",
+    steps: [
+      { label: "초기 설계", content: "표현 선택 직후 즉시 퀴즈로 학습시키는 방식으로 기획 시작" },
+      { label: "문제 발견", content: "표현을 고르자마자 퀴즈가 뜨면 '지금 쓸 표현 찾으러 왔는데?'라는 흐름 방해 인지" },
+      { label: "재정의", content: "MEL의 핵심은 즉시 학습이 아니라, 고른 표현을 잊히지 않게 '리콜'하는 것으로 전면 재정의" },
+      { label: "구조 전환", content: "저장→리콜 중심 구조로 재설계, 즉시 학습은 선택형 보조 버튼으로 전환" },
+    ],
   },
   {
-    label: "가설 설정",
-    content: "온보딩이 길고 복잡해서 초기 이탈 발생",
+    title: "앱 전환 결정 — 웹의 구조적 한계를 데이터로 진단",
+    steps: [
+      { label: "데이터 발견", content: "베타 운영 중 D3 재방문율 16.1% 측정 — 기대 대비 낮은 재방문" },
+      { label: "원인 분석", content: "리콜 핵심 채널인 푸시 알림이 웹 환경에서 구조적으로 불가능함을 인지" },
+      { label: "의사결정", content: "낮은 D3 = 기능 문제가 아닌 웹의 구조적 한계로 진단, React Native 앱 전환 결정" },
+      { label: "로드맵 확정", content: "앱 전환 후 푸시 알림 기반 리콜 시스템 설계, 현재 로드맵에 반영" },
+    ],
   },
   {
-    label: "실험",
-    content: "상황별 선택 → 하드코딩 표현 구조로 전환",
+    title: "번역→저장 전환 개선 사례",
+    steps: [
+      { label: "데이터 확인", content: "번역 완료 후 저장까지 이어지지 않는 이탈 패턴 발견" },
+      { label: "가설 설정", content: "저장 행동을 유도하는 장치 부재 — 번역 완료 화면에서 다음 행동이 불명확" },
+      { label: "실험", content: "번역 완료 직후 저장 유도 UI 장치 설계 및 배치" },
+      { label: "결과", content: "번역→저장 전환율 70.5% 달성" },
+    ],
   },
   {
-    label: "결과",
-    content: "온보딩 완료율 상승, study_time 질문 제거로 단축",
+    title: "온보딩 개편 사례",
+    steps: [
+      { label: "데이터 확인", content: "저장 후 학습 전환율이 낮음을 PostHog에서 발견" },
+      { label: "가설 설정", content: "온보딩이 길고 복잡해서 초기 이탈 발생" },
+      { label: "실험", content: "상황별 선택 → 하드코딩 표현 구조로 전환" },
+      { label: "결과", content: "온보딩 완료율 상승, study_time 질문 제거로 단축" },
+    ],
   },
 ];
 
-export default function EnglishLogPage() {
+export default async function EnglishLogPage() {
+  const { userCount, phrasesCount } = await getMelStats();
+
+  const metrics = [
+    { value: `${userCount}명`, label: "베타 가입자" },
+    { value: "70.5%", label: "번역 → 저장 전환율" },
+    { value: `${phrasesCount}개`, label: "저장된 표현" },
+    { value: "53%", label: "번역 속도 개선" },
+    { value: "200만원", label: "모두의 창업 지원금" },
+  ];
+
   return (
     <main
       style={{ background: "var(--navy-950)", minHeight: "100vh" }}
     >
       {/* 뒤로가기 */}
       <div className="max-w-5xl mx-auto px-8 pt-12">
-        <Link
-          href="/#projects"
-          className="inline-flex items-center gap-2 text-sm transition-colors"
-          style={{ color: "var(--text-muted)" }}
+        <Suspense
+          fallback={
+            <Link
+              href="/#projects"
+              className="inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-70"
+              style={{ color: "var(--text-muted)" }}
+            >
+              ← 메인으로
+            </Link>
+          }
         >
-          ← 프로젝트 목록으로
-        </Link>
+          <ProjectsBackLink
+            className="inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-70"
+            style={{ color: "var(--text-muted)" }}
+          />
+        </Suspense>
       </div>
 
       {/* 헤더 */}
       <header className="max-w-5xl mx-auto px-8 pt-12 pb-16">
-        <span className="badge mb-6 inline-block">공동 창업 · 기획 · 운영 · 2025.10~현재</span>
+        <span className="badge mb-6 inline-block">기획 · 운영 · 2026.05~현재</span>
         <h1
           className="text-5xl md:text-6xl font-bold leading-tight mb-6"
           style={{ color: "var(--text-primary)" }}
@@ -129,7 +166,7 @@ export default function EnglishLogPage() {
         </p>
 
         <div className="flex flex-col gap-0">
-          {process.map(({ step, title, body }, i) => (
+          {processSteps.map(({ step, title, body }, i) => (
             <div
               key={step}
               className="flex gap-8 pb-12"
@@ -172,48 +209,56 @@ export default function EnglishLogPage() {
       </section>
 
       {/* 의사결정 루프 — 인라인 플로우 */}
-      <section
-        className="max-w-5xl mx-auto px-8 mb-24"
-      >
-        <div
-          className="rounded-xl p-8"
-          style={{ background: "var(--navy-800)", border: "1px solid var(--border)" }}
+      <section className="max-w-5xl mx-auto px-8 mb-24">
+        <p
+          className="text-xs font-semibold uppercase tracking-widest mb-8"
+          style={{ color: "var(--text-muted)" }}
         >
-          <p
-            className="text-xs font-semibold uppercase tracking-widest mb-6"
-            style={{ color: "var(--text-muted)" }}
-          >
-            데이터 기반 의사결정 루프 — 온보딩 개편 사례
-          </p>
-
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
-            {decisions.map(({ label, content }, i) => (
-              <div key={label} className="flex items-center gap-3 flex-1">
-                <div className="flex flex-col gap-1.5 flex-1">
-                  <span
-                    className="text-[10px] font-semibold uppercase tracking-widest"
-                    style={{ color: "var(--accent)" }}
-                  >
-                    {label}
-                  </span>
-                  <p
-                    className="text-sm leading-snug"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {content}
-                  </p>
-                </div>
-                {i < decisions.length - 1 && (
-                  <span
-                    className="text-lg shrink-0 hidden md:block"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    →
-                  </span>
-                )}
+          데이터 기반 의사결정 루프
+        </p>
+        <div className="flex flex-col gap-4">
+          {decisionLoops.map(({ title, steps }) => (
+            <div
+              key={title}
+              className="rounded-xl p-8"
+              style={{ background: "var(--navy-800)", border: "1px solid var(--border)" }}
+            >
+              <p
+                className="text-xs font-semibold uppercase tracking-widest mb-6"
+                style={{ color: "var(--text-muted)" }}
+              >
+                {title}
+              </p>
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
+                {steps.map(({ label, content }, i) => (
+                  <div key={label} className="flex items-center gap-3 flex-1">
+                    <div className="flex flex-col gap-1.5 flex-1">
+                      <span
+                        className="text-[10px] font-semibold uppercase tracking-widest"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {label}
+                      </span>
+                      <p
+                        className="text-sm leading-snug"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        {content}
+                      </p>
+                    </div>
+                    {i < steps.length - 1 && (
+                      <span
+                        className="text-lg shrink-0 hidden md:block"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        →
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -244,12 +289,13 @@ export default function EnglishLogPage() {
             className="text-base leading-relaxed"
             style={{ color: "var(--text-secondary)" }}
           >
-            MEL은 전담 개발자 없이 운영됩니다. Claude · ChatGPT를 활용해
-            기능을 기획하고 코드를 작성하며, GitHub → Vercel 자동 배포로
-            운영합니다. 팀용 배포와 사용자용 배포를 분리해 안전하게
-            실험하는 구조도 직접 설계했습니다. 이 과정에서 AI를 단순
-            코드 생성 도구가 아니라, 문제를 함께 정의하고 의사결정을
-            검토하는 파트너로 활용하고 있습니다.
+            MEL은 전담 개발자 없이 운영됩니다. Claude · ChatGPT를 파트너로
+            삼아 기획부터 코드 작성, GitHub → Vercel 배포 자동화까지
+            운영 프로세스 전체를 파이프라인화했습니다. 팀용·사용자용
+            배포를 분리해 안전하게 실험하는 구조도 직접 설계했습니다.
+            AI를 단순 코드 생성 도구가 아닌 의사결정 파트너로 써서,
+            개발 리소스 한계 안에서 비즈니스 속도를 어디까지 높일 수
+            있는지 실험하고 증명해 나가고 있습니다.
           </p>
         </div>
       </section>
@@ -276,13 +322,23 @@ export default function EnglishLogPage() {
             my-english-log-team.vercel.app ↗
           </a>
         </div>
-        <Link
-          href="/#projects"
-          className="text-sm transition-colors"
-          style={{ color: "var(--text-muted)" }}
+        <Suspense
+          fallback={
+            <Link
+              href="/#projects"
+              className="text-sm transition-opacity hover:opacity-70"
+              style={{ color: "var(--text-muted)" }}
+            >
+              ← 다른 프로젝트 보기
+            </Link>
+          }
         >
-          ← 다른 프로젝트 보기
-        </Link>
+          <ProjectsBackLink
+            label="← 다른 프로젝트 보기"
+            className="text-sm transition-opacity hover:opacity-70"
+            style={{ color: "var(--text-muted)" }}
+          />
+        </Suspense>
       </section>
     </main>
   );

@@ -1,6 +1,13 @@
 import { timeline } from "@/data/timeline";
+import { getMelStats } from "@/lib/mel-stats";
 
-export default function Timeline() {
+export default async function Timeline() {
+  const { userCount } = await getMelStats();
+  const items = timeline.map((item) =>
+    item.title === "MEL"
+      ? { ...item, highlight: `베타 ${userCount}명 · 번역→저장 70.5% · 지원금 200만원` }
+      : item
+  );
   return (
     <section
       id="career"
@@ -19,7 +26,7 @@ export default function Timeline() {
       >
         미스터멘션에서 시작해
         <br />
-        MEL 창업까지
+        MEL까지
       </h2>
 
       <div className="relative">
@@ -34,7 +41,7 @@ export default function Timeline() {
         />
 
         <div className="flex flex-col gap-0">
-          {timeline.map(({ period, title, role, description, highlight }, i) => (
+          {items.map(({ period, title, role, description, highlight }, i) => (
             <div
               key={`${period}-${title}`}
               className="flex gap-8 pb-14 last:pb-0"
@@ -47,16 +54,16 @@ export default function Timeline() {
                   left: "0.75rem",
                   background: "var(--navy-950)",
                   border:
-                    i === timeline.length - 1
+                    i === items.length - 1
                       ? "2px solid var(--accent)"
                       : "1px solid var(--border-hover)",
                   boxShadow:
-                    i === timeline.length - 1
+                    i === items.length - 1
                       ? "0 0 8px rgba(79,142,247,0.35)"
                       : "none",
                 }}
               >
-                {i === timeline.length - 1 && (
+                {i === items.length - 1 && (
                   <span
                     className="w-2 h-2 rounded-full"
                     style={{ background: "var(--accent)" }}

@@ -1,27 +1,24 @@
 const strengths = [
   {
     eyebrow: "01",
-    title: "고객 인사이트",
-    body: "화물차주 20명 전화 인터뷰, 호스트 117명 직접 통화 — 책상이 아닌 현장에서 고객을 이해합니다. 정량 설문 n=115로 가설을 검증합니다.",
-    tag: "현장 조사 · 인터뷰 · 설문",
+    label: "Context Finding",
+    title: "가설 검증을 위한 현장 분석",
+    body: "숫자가 담지 못하는 비즈니스 맥락을 파악하기 위해 인터뷰와 설문을 먼저 씁니다. 호스트 117명과 직접 통화하고, 화물차주 20명을 인터뷰하며 설문 n=115를 진행했습니다 — 현장의 목소리에서 진짜 가설을 추출합니다.",
+    tag: "현장 인터뷰 · 설문 · 행동 관찰",
   },
   {
     eyebrow: "02",
-    title: "데이터 기반 의사결정",
-    body: "PostHog·Supabase로 사용자 행동 데이터를 직접 측정하고, 셀 성과 대시보드를 직접 설계해 의사결정에 활용합니다.",
-    tag: "번역→저장 전환율 70.5%",
+    label: "Systemizing",
+    title: "데이터 기반 오퍼레이션 설계",
+    body: "문제를 일회성 해결에 그치지 않고, 재현 가능한 구조로 만듭니다. 셀 성과 대시보드를 기획해 팀원 간 노하우가 흐르는 피드백 루틴을 설계했고 — 메일 선발송 방식은 전사 온보딩 표준이 됐고, 대시보드 구조는 다른 셀들이 벤치마킹했습니다.",
+    tag: "대시보드 설계 · 피드백 루틴 · KPI 관리",
   },
   {
     eyebrow: "03",
-    title: "실행력",
-    body: "KPI 초과 달성, 학회 지원자 역대 최다 31명, MEL 베타 102명 — 기획을 수치로 연결합니다. 목표 설정부터 마감까지 직접 책임집니다.",
-    tag: "KPI 147% · KPI 120%",
-  },
-  {
-    eyebrow: "04",
-    title: "AI 활용",
-    body: "비개발자로서 Claude·ChatGPT를 활용해 MEL 서비스를 직접 기획·개발·운영합니다. AI를 코드 생성 도구가 아닌 의사결정 파트너로 사용합니다.",
-    tag: "MEL 서비스 직접 개발·운영",
+    label: "Efficiency Tech",
+    title: "AI 기반 프로세스 최적화",
+    body: "Claude·ChatGPT를 운영 파트너로 활용해 MEL 기획부터 배포 자동화까지 직접 운영합니다. AI는 실행 속도를, 데이터는 방향을 책임집니다 — D3 재방문율 16.1%를 근거로 웹의 구조적 한계를 진단하고 앱 전환을 결정했습니다.",
+    tag: "AI 레버리지 · 직접 운영 · 데이터 기반 의사결정",
   },
 ];
 
@@ -47,15 +44,23 @@ export default function CoreStrength() {
         접근하는 방식
       </h2>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {strengths.map(({ eyebrow, title, body, tag }) => (
+      <div className="grid md:grid-cols-3 gap-6">
+        {strengths.map(({ eyebrow, label, title, body, tag }) => (
           <div key={title} className="card p-8 flex flex-col gap-5">
-            <span
-              className="text-xs font-semibold"
-              style={{ color: "var(--accent)" }}
-            >
-              {eyebrow}
-            </span>
+            <div className="flex items-center justify-between">
+              <span
+                className="text-xs font-semibold"
+                style={{ color: "var(--accent)" }}
+              >
+                {eyebrow}
+              </span>
+              <span
+                className="text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: "var(--text-muted)" }}
+              >
+                {label}
+              </span>
+            </div>
 
             <h3
               className="text-xl font-bold"

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCallback } from "react";
 
 const navLinks = [
   { label: "About", href: "/#about" },
@@ -13,6 +14,20 @@ const navLinks = [
 export default function Navbar() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+
+  const handleHashClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      if (isHome && href.includes("#")) {
+        const hash = href.split("#").pop();
+        const el = hash ? document.getElementById(hash) : null;
+        if (el) {
+          e.preventDefault();
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    },
+    [isHome]
+  );
 
   return (
     <header
@@ -31,15 +46,15 @@ export default function Navbar() {
           style={{ color: "var(--text-primary)" }}
         >
           박산하
-          <span style={{ color: "var(--accent)" }}>.</span>
         </Link>
 
         {/* 링크 */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="flex items-center gap-4 md:gap-8">
           {navLinks.map(({ label, href }) => (
             <Link
               key={label}
               href={href}
+              onClick={(e) => handleHashClick(e, href)}
               className="text-sm transition-colors"
               style={{ color: "var(--text-muted)" }}
             >
